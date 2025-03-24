@@ -42,21 +42,27 @@ class IRCClient:
                 # Update current channel if we joined one
                 if "You have joined" in message:
                     try:
-                        self.current_channel = message.split("You have joined ")[1].strip()
+                        self.current_channel = message.split("You have joined ")[
+                            1
+                        ].strip()
                     except:
                         pass
 
                 # Update nickname if we set one
                 if message.startswith("You are now known as "):
                     try:
-                        self.nickname = message.split("You are now known as ")[1].strip()
+                        self.nickname = message.split("You are now known as ")[
+                            1
+                        ].strip()
                     except:
                         pass
 
                 # Extract nickname from welcome message
                 if message.startswith("Welcome ") and "!" in message:
                     try:
-                        self.nickname = message.split("Welcome ")[1].split("!")[0].strip()
+                        self.nickname = (
+                            message.split("Welcome ")[1].split("!")[0].strip()
+                        )
                     except:
                         pass
 

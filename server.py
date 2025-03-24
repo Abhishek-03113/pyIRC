@@ -33,8 +33,8 @@ class IRCServer:
     ## DEBUG : this not working
     def broadcast_to_channel(self, channel, message, exclude_socket=None):
         """Send message to all clients in a channel except the excluded socket"""
-        
-        print(f'[DEBUG] Broadcasting to channel: {channel}, Message: {message}')
+
+        print(f"[DEBUG] Broadcasting to channel: {channel}, Message: {message}")
         if channel not in self.channels:
             print(f"[DEBUG] Channel {channel} not found.")
             return
@@ -57,7 +57,6 @@ class IRCServer:
                 except Exception as e:
                     print(f"[ERROR] Failed to send message to {nick}: {e}")
                     self.remove_client(client_socket)
-
 
     def remove_client(self, client_socket):
         """Remove a client from all structures when they disconnect"""
@@ -100,7 +99,9 @@ class IRCServer:
         while True:
             try:
                 message = client_socket.recv(1024).decode("utf-8").strip()
-                print(f'Received message "{message}" from {client_socket.getpeername()}') # DEBUG
+                print(
+                    f'Received message "{message}" from {client_socket.getpeername()}'
+                )  # DEBUG
 
                 if not message:
                     break
@@ -173,9 +174,7 @@ class IRCServer:
                         self.channels[args].add(nickname)
                         self.client_channels[nickname].add(args)
 
-                        client_socket.send(
-                            f"You have joined {args}".encode("utf-8")
-                        )
+                        client_socket.send(f"You have joined {args}".encode("utf-8"))
                         self.broadcast_to_channel(
                             args,
                             f"SYSTEM: {nickname} has joined {args}",
@@ -197,24 +196,17 @@ class IRCServer:
                             )
                             continue
 
-                        if (
-                            args in self.channels
-                            and nickname in self.channels[args]
-                        ):
+                        if args in self.channels and nickname in self.channels[args]:
                             self.channels[args].remove(nickname)
                             self.client_channels[nickname].remove(args)
 
-                            client_socket.send(
-                                f"You have left {args}".encode("utf-8")
-                            )
+                            client_socket.send(f"You have left {args}".encode("utf-8"))
                             self.broadcast_to_channel(
                                 args, f"SYSTEM: {nickname} has left {args}"
                             )
                         else:
                             client_socket.send(
-                                f"ERROR: You are not in channel {args}".encode(
-                                    "utf-8"
-                                )
+                                f"ERROR: You are not in channel {args}".encode("utf-8")
                             )
 
                     elif command == "/list":
@@ -242,9 +234,7 @@ class IRCServer:
                             )
                         else:
                             client_socket.send(
-                                f"ERROR: Channel {args} does not exist".encode(
-                                    "utf-8"
-                                )
+                                f"ERROR: Channel {args} does not exist".encode("utf-8")
                             )
 
                     elif command == "/createchannel":
@@ -270,9 +260,7 @@ class IRCServer:
 
                         if args in self.channels:
                             client_socket.send(
-                                f"ERROR: Channel {args} already exists".encode(
-                                    "utf-8"
-                                )
+                                f"ERROR: Channel {args} already exists".encode("utf-8")
                             )
                         else:
                             self.channels[args] = set()
@@ -320,9 +308,7 @@ class IRCServer:
                             )
                         else:
                             client_socket.send(
-                                f"ERROR: User {target_nick} not found".encode(
-                                    "utf-8"
-                                )
+                                f"ERROR: User {target_nick} not found".encode("utf-8")
                             )
 
                     elif command == "/help":
@@ -384,9 +370,7 @@ class IRCServer:
                             target_channel = next(iter(joined_channels))
                         else:
                             client_socket.send(
-                                "ERROR: You haven't joined any channels".encode(
-                                    "utf-8"
-                                )
+                                "ERROR: You haven't joined any channels".encode("utf-8")
                             )
                             continue
 
@@ -399,7 +383,7 @@ class IRCServer:
                     client_socket.send(formatted_message.encode("utf-8"))
 
                     # Broadcast to channel
-                    self.broadcast_to_channel(  
+                    self.broadcast_to_channel(
                         target_channel, formatted_message, client_socket
                     )
 
@@ -407,7 +391,6 @@ class IRCServer:
                 print(f"Error handling client {nickname}: {e}")
                 traceback.print_exc()  # Add traceback to see full error details
                 break
-
 
         self.remove_client(client_socket)
 
